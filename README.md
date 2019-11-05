@@ -9,8 +9,7 @@ Library that helps with in-memory testing against ldap using [UnboundID LDAP SDK
 
 Inspired by [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka)
 
-
-## Version compability
+## Version capability
 
 `inmemoryldap` is available in MavenCentral compiled for scala 2.12 and 2.13.
 
@@ -18,19 +17,20 @@ Inspired by [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka)
 ## How to use
 
 By default configuration for mock will be taken from [reference.conf](src/main/resources/reference.conf).
-Library will look for ldif definitions on classpath `/ldap/test-data.ldif` you can change it by adding multiple files by configuration value (string list) `inmemoryldap.files`
-Before running user code ldif files will be loaded to server in order of occurrence. 
-There are two alternatives of running embedded ldap. Using one of code block:
+Library will look for ldif definitions on classpath `/ldap/test-data.ldif`.
+Multiple files can be scheduled by manipulating `inmemoryldap.files` config property.
+Ldif files will be loaded to server in order of occurrence before running any user code. 
+There are two alternatives of running embedded ldap:
 
 ```scala
   import InMemoryLdapServer._
   withRunningLdap { implicit ds =>
     // ldap will be accessible here on default address: 127.0.0.1:1234
   }
-  // before going further all resources will be pruned be cleaned
+  // before going further all resources will be pruned
 ```
 
-On the other hand you might want to use your mocked ldap for longer periods of time (ie `BeforeAndAfterAll`).
+On the other hand you might want to use your mocked ldap for longer periods of time (ie with trait `BeforeAndAfterAll`).
 To do so you might use: 
 
 ```scala
@@ -51,5 +51,5 @@ Alternatively both `com.github.flakm.InMemoryLdapServer.start` and `com.github.f
  }
 ```
 
-For more examples read [with running examples](src/test/scala/com/github/flakm/WithRunningLdapTest.scala) or [start stop examples](src/test/scala/com/github/flakm/StartStopTest.scala)
+For more examples read [here](src/test/scala/com/github/flakm/WithRunningLdapTest.scala) or [here](src/test/scala/com/github/flakm/StartStopTest.scala)
 
