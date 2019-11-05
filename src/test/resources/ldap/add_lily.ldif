@@ -1,0 +1,9 @@
+dn: uid=lily,ou=people,dc=example,dc=com
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: lily
+sn: lily
+uid: lily
+userPassword: lily
