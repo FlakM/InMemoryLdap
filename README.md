@@ -5,9 +5,9 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.flakm/inmemoryldap_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.flakm/inmemoryldap_2.12)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Library that helps with in-memory testing against ldap.
+Library that helps with in-memory testing against ldap using [UnboundID LDAP SDK for Java](https://ldap.com/unboundid-ldap-sdk-for-java/).
 
-Inspired by [inmemoryldap](https://github.com/embeddedkafka/inmemoryldap)
+Inspired by [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka)
 
 
 ## Version compability
