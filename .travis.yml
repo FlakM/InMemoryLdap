@@ -24,12 +24,17 @@ before_install:
 stages:
   - name: test
   - name: release
-    if: (branch = master AND type = push) OR (tag IS present)
+    if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
+
 
 script: travis_retry sbt ++$TRAVIS_SCALA_VERSION test
 
 jobs:
   include:
-    # run release only if previous stages passed
+    - name: compile
+      script: sbt test
+    - name: formatting
+      script: ./bin/scalafmt --test
+    # run ci-release only if previous stages passed
     - stage: release
-      script: sbt --debug ci-release || sbt --debug sonatypeReleaseAll
+      script: sbt ci-release
