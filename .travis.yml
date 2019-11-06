@@ -4,7 +4,7 @@ jdk:
   - openjdk13
 
 scala:
-  - 2.13.1
+  - 2.13.0
 
 sudo: false
 
@@ -32,7 +32,7 @@ script: travis_retry sbt ++$TRAVIS_SCALA_VERSION test
 jobs:
   include:
     - name: compile
-      script: sbt test
+      script: sbt clean coverage test coverageAggregate codacyCoverage
     - name: formatting
       script: sbt scalafmtCheckAll
     # run ci-release only if previous stages passed

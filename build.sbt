@@ -4,8 +4,9 @@ parallelExecution in ThisBuild := false
 
 lazy val commonSettings = Seq(
   organization := "com.github.flakm",
-  scalaVersion := "2.13.1",
-  crossScalaVersions := Seq("2.12.9", "2.13.1"),
+//  https://github.com/scoverage/sbt-scoverage/issues/295
+  scalaVersion := "2.13.0",
+  crossScalaVersions := Seq("2.12.9", "2.13.0"),
   homepage := Some(url("https://github.com/FlakM/InMemoryLdap")),
   parallelExecution in Test := false,
   logBuffered in Test := false,
