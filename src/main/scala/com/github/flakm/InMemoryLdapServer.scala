@@ -4,13 +4,8 @@ import java.net.InetAddress
 
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.Logger
-import com.unboundid.ldap.listener.{
-  InMemoryDirectoryServer,
-  InMemoryDirectoryServerConfig,
-  InMemoryListenerConfig
-}
+import com.unboundid.ldap.listener.{InMemoryDirectoryServer, InMemoryDirectoryServerConfig, InMemoryListenerConfig}
 
-import scala.jdk.CollectionConverters._
 
 object InMemoryLdapServer {
 
@@ -40,14 +35,14 @@ object InMemoryLdapServer {
   @volatile private var server: InMemoryDirectoryServer = _
 
   /**
-    * beware that server reference is mutable
-    *
-    * @param config - optional config
-    * @return mutable, shared reference to imds
-    */
+   * beware that server reference is mutable
+   *
+   * @param config - optional config
+   * @return mutable, shared reference to imds
+   */
   def start(
-      config: Config = ConfigFactory.defaultReference
-  ): InMemoryDirectoryServer = {
+             config: Config = ConfigFactory.defaultReference
+           ): InMemoryDirectoryServer = {
     this.synchronized {
       if (server == null) {
         server = startInternal(config)
@@ -63,14 +58,12 @@ object InMemoryLdapServer {
       defaultSettings(config)
     )
 
-    config
-      .getStringList("inmemoryldap.files")
-      .asScala
-      .map(getClass.getResource(_).getPath)
-      .foreach { path =>
-        log.debug("Installing ldif file from {}", path)
-        ds.importFromLDIF(false, path)
-      }
+    config.getStringList("inmemoryldap.files").forEach { p =>
+      val path = getClass.getResource(p).getPath
+      log.debug("Installing ldif file from {}", path)
+      ds.importFromLDIF(false, path)
+    }
+
 
     ds.startListening()
     log.debug(
@@ -96,8 +89,8 @@ object InMemoryLdapServer {
     withRunningLdapConfig()(body)
 
   def withRunningLdapConfig[T](
-      config: Config = ConfigFactory.defaultReference()
-  )(body: => InMemoryDirectoryServer => T): T = {
+                                config: Config = ConfigFactory.defaultReference()
+                              )(body: => InMemoryDirectoryServer => T): T = {
     val ds: InMemoryDirectoryServer = startInternal(config)
     try {
       body(ds)
