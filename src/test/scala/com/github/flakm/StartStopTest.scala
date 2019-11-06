@@ -10,7 +10,7 @@ class StartStopTest extends FlatSpec with Matchers {
   behavior of "InMemoryLdapServer.start/stop"
 
   it should "enable to start/stop shared server" in {
-    val server: InMemoryDirectoryServer = InMemoryLdapServer.start()
+    val server: LdapContext = InMemoryLdapServer.start()
 
     checkBobExists(server)
 

@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.com/FlakM/InMemoryLdap.svg?branch=master)](https://travis-ci.com/FlakM/InMemoryLdap)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c64274de3ad4a13a3781956532ec08e)](https://www.codacy.com/manual/FlakM/InMemoryLdap?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FlakM/InMemoryLdap&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3c64274de3ad4a13a3781956532ec08e)](https://www.codacy.com/manual/FlakM/InMemoryLdap?utm_source=github.com&utm_medium=referral&utm_content=FlakM/InMemoryLdap&utm_campaign=Badge_Coverage)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.flakm/inmemoryldap_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.flakm/inmemoryldap_2.12)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -13,7 +14,6 @@ Inspired by [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka)
 
 `inmemoryldap` is available in MavenCentral compiled for scala 2.12 and 2.13.
 
-
 ## How to use
 
 By default configuration for mock will be taken from [reference.conf](src/main/resources/reference.conf).
@@ -24,7 +24,7 @@ There are two alternatives of running embedded ldap:
 
 ```scala
   import InMemoryLdapServer._
-  withRunningLdap { implicit ds =>
+  withRunningLdap { implicit ctx =>
     // ldap will be accessible here on default address: 127.0.0.1:1234
   }
   // before going further all resources will be pruned
@@ -34,11 +34,10 @@ On the other hand you might want to use your mocked ldap for longer periods of t
 To do so you might use: 
 
 ```scala
-    val server: InMemoryDirectoryServer = InMemoryLdapServer.start()
+    val server: LdapContext = InMemoryLdapServer.start()
     // some code goes here  
     InMemoryLdapServer.stop()
 ```
-
 
 ## Customizing behaviour
 
@@ -46,10 +45,8 @@ Each method might be parameterized by optional configuration. To do so either ov
 Alternatively both `com.github.flakm.InMemoryLdapServer.start` and `com.github.flakm.InMemoryLdapServer.withRunningLdapConfig` take optional config:
 
 ```scala
- withRunningLdapConfig(customConfig) { ds =>
+ withRunningLdapConfig(customConfig) { ctx =>
   //code here
  }
 ```
-
 For more examples read [here](src/test/scala/com/github/flakm/WithRunningLdapTest.scala) or [here](src/test/scala/com/github/flakm/StartStopTest.scala)
-

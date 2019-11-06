@@ -16,7 +16,7 @@ class WithRunningLdapTest extends FlatSpec with Matchers {
   }
 
   it should "enable changing of configuration" in {
-    val defaultConf = ConfigFactory.defaultReference()
+    val defaultConf = ConfigEnricher.enrichConfig(ConfigFactory.load())
 
     withRunningLdapConfig(defaultConf) { implicit ds =>
       withClue("default configuration runs only test-data.ldif") {
@@ -27,6 +27,7 @@ class WithRunningLdapTest extends FlatSpec with Matchers {
     val withAdditionalScript =
       ConfigFactory.parseString("""
         |inmemoryldap {
+        |  ssl.enabled = false
         |  files = [
         |    "/ldap/test-data.ldif"
         |    "/ldap/add_lily.ldif"
