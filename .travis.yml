@@ -34,7 +34,7 @@ jobs:
     - name: compile
       script: sbt test
     - name: formatting
-      script: ./bin/scalafmt --test
+      script: sbt scalafmtCheckAll
     # run ci-release only if previous stages passed
     - stage: release
       script: sbt ci-release
