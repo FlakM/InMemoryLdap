@@ -4,7 +4,9 @@ parallelExecution in ThisBuild := false
 
 lazy val commonSettings = Seq(
   organization := "com.github.flakm",
-//  https://github.com/scoverage/sbt-scoverage/issues/295
+  //  https://github.com/scoverage/sbt-scoverage/issues/295
+  //  https://github.com/scala/bug/issues/11608
+  //  todo after #295 being fixed we can bump jdk11 -> 13 and scala version to 2.13.1 (travis and here)
   scalaVersion := "2.13.0",
   crossScalaVersions := Seq("2.12.9", "2.13.0"),
   homepage := Some(url("https://github.com/FlakM/InMemoryLdap")),
