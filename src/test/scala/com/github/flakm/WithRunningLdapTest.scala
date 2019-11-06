@@ -1,8 +1,8 @@
 package com.github.flakm
 
+import com.github.flakm.CommonUtils.{checkBobExists, _}
+import com.github.flakm.InMemoryLdapServer._
 import com.typesafe.config.ConfigFactory
-import CommonUtils.{checkBobExists, _}
-import InMemoryLdapServer._
 import org.scalatest.{FlatSpec, Matchers}
 
 class WithRunningLdapTest extends FlatSpec with Matchers {

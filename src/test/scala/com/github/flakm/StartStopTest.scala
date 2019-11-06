@@ -1,8 +1,8 @@
 package com.github.flakm
 
+import com.github.flakm.CommonUtils._
 import com.unboundid.ldap.listener.InMemoryDirectoryServer
-import com.unboundid.ldap.sdk.{LDAPException, LDAPInterface}
-import CommonUtils._
+import com.unboundid.ldap.sdk.LDAPException
 import org.scalatest.{FlatSpec, Matchers}
 
 class StartStopTest extends FlatSpec with Matchers {

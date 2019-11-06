@@ -4,8 +4,11 @@ import java.net.InetAddress
 
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.Logger
-import com.unboundid.ldap.listener.{InMemoryDirectoryServer, InMemoryDirectoryServerConfig, InMemoryListenerConfig}
-
+import com.unboundid.ldap.listener.{
+  InMemoryDirectoryServer,
+  InMemoryDirectoryServerConfig,
+  InMemoryListenerConfig
+}
 
 object InMemoryLdapServer {
 
@@ -35,14 +38,14 @@ object InMemoryLdapServer {
   @volatile private var server: InMemoryDirectoryServer = _
 
   /**
-   * beware that server reference is mutable
-   *
-   * @param config - optional config
-   * @return mutable, shared reference to imds
-   */
+    * beware that server reference is mutable
+    *
+    * @param config - optional config
+    * @return mutable, shared reference to imds
+    */
   def start(
-             config: Config = ConfigFactory.defaultReference
-           ): InMemoryDirectoryServer = {
+      config: Config = ConfigFactory.defaultReference
+  ): InMemoryDirectoryServer = {
     this.synchronized {
       if (server == null) {
         server = startInternal(config)
@@ -63,7 +66,6 @@ object InMemoryLdapServer {
       log.debug("Installing ldif file from {}", path)
       ds.importFromLDIF(false, path)
     }
-
 
     ds.startListening()
     log.debug(
@@ -89,8 +91,8 @@ object InMemoryLdapServer {
     withRunningLdapConfig()(body)
 
   def withRunningLdapConfig[T](
-                                config: Config = ConfigFactory.defaultReference()
-                              )(body: => InMemoryDirectoryServer => T): T = {
+      config: Config = ConfigFactory.defaultReference()
+  )(body: => InMemoryDirectoryServer => T): T = {
     val ds: InMemoryDirectoryServer = startInternal(config)
     try {
       body(ds)
