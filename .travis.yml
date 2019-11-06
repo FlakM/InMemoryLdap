@@ -32,4 +32,4 @@ jobs:
   include:
     # run release only if previous stages passed
     - stage: release
-      script: sbt ci-release || sbt sonatypeReleaseAll
+      script: sbt --debug ci-release || sbt --debug sonatypeReleaseAll
