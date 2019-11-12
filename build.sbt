@@ -21,6 +21,7 @@ lazy val commonSettings = Seq(
 lazy val commonLibrarySettings = libraryDependencies ++= Seq(
   "com.unboundid" % "unboundid-ldapsdk" % "4.0.12",
   "com.typesafe" % "config" % "1.4.0",
+  "com.typesafe" %% "ssl-config-core" % "0.4.0",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   "org.scalactic" %% "scalactic" % "3.0.8" % "test",
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
