@@ -15,13 +15,13 @@ Inspired by [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka)
 `inmemoryldap` is available in MavenCentral compiled for scala 2.12 and 2.13.
 To use add project dependency using the tool of your choice.
 
-#### sbt
+### sbt
 
 ```sbt
 libraryDependencies += "com.github.flakm" %% "inmemoryldap" % version
 ```
 
-#### gradle
+### gradle
 
 ```groovy
 compile group: 'com.github.flakm', name: 'inmemoryldap_2.13', version: version
@@ -34,7 +34,7 @@ Multiple files can be scheduled by manipulating `inmemoryldap.files` config prop
 Ldif files will be loaded to server in order of occurrence before running any user code. 
 There are two alternatives of running embedded ldap:
 
-#### closure style
+### closure style
 
 ```scala
   import InMemoryLdapServer._
@@ -44,7 +44,7 @@ There are two alternatives of running embedded ldap:
   // before going further all resources will be pruned
 ```
 
-#### start stop style
+### start stop style
 
 On the other hand you might want to use your mocked ldap for longer periods of time (ie with trait `BeforeAndAfterAll`).
 This style might be easily used with java code.
