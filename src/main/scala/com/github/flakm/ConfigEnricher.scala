@@ -3,7 +3,6 @@ package com.github.flakm
 import com.typesafe.config.{Config, ConfigFactory}
 
 object ConfigEnricher {
-
   def enrichConfig(resolved: Config): Config = {
     if (resolved.getBoolean("inmemoryldap.ssl.resolveStoresFromClasspath")) {
       val dir = getClass.getResource("/ssl").getPath
@@ -18,5 +17,4 @@ object ConfigEnricher {
       resolved
     }
   }
-
 }

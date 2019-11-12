@@ -2,6 +2,7 @@ package com.github.flakm
 
 import java.net.InetAddress
 
+import com.github.flakm.SSLProvider.{NotSecure, Secured, SecurityContext}
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.Logger
 import com.unboundid.ldap.listener.{
@@ -9,19 +10,24 @@ import com.unboundid.ldap.listener.{
   InMemoryDirectoryServerConfig,
   InMemoryListenerConfig
 }
-import javax.net.ssl.SSLContext
 
 object InMemoryLdapServer {
-
   private val nil = null
 
   private val log = Logger(getClass)
 
   def defaultConfig: Config = ConfigEnricher.enrichConfig(ConfigFactory.load())
 
+  private case class ServerWithContext(
+      server: InMemoryDirectoryServer,
+      secContext: SecurityContext
+  )
+
+  @volatile private var server: ServerWithContext = _
+
   private def defaultSettings(
       config: Config
-  ): (InMemoryDirectoryServerConfig, Option[SSLContext]) = {
+  ): (InMemoryDirectoryServerConfig, SecurityContext) = {
     val imdsc = new InMemoryDirectoryServerConfig(
       config.getString("inmemoryldap.baseDn")
     )
@@ -38,13 +44,20 @@ object InMemoryLdapServer {
     ) =
       if (config.getBoolean("inmemoryldap.ssl.enabled")) {
         val sslProvider = new SSLProvider(config)
-        (
-          sslProvider.serverSSLContext.getServerSocketFactory,
-          sslProvider.clientSSLContext.getSocketFactory,
-          sslProvider.clientSSLContext.getSocketFactory,
-          Some(sslProvider.clientSSLContext)
-        )
-      } else (nil, nil, nil, None)
+        (sslProvider.serverSSLContext, sslProvider.clientSSLContext) match {
+          case (Secured(_, s), clientContext @ Secured(_, c)) =>
+            (
+              s.getServerSocketFactory,
+              c.getSocketFactory,
+              c.getSocketFactory,
+              clientContext
+            )
+          case _ =>
+            throw new IllegalArgumentException(
+              s"inmemoryldap.ssl.enabled set to true but stores are not configured correctly!"
+            )
+        }
+      } else (nil, nil, nil, NotSecure)
 
     val listenerConf = new InMemoryListenerConfig(
       config.getString("inmemoryldap.listenerName"),
@@ -57,9 +70,6 @@ object InMemoryLdapServer {
     imdsc.setListenerConfigs(listenerConf)
     (imdsc, clientContext)
   }
-
-  @volatile private var server: (InMemoryDirectoryServer, Option[SSLContext]) =
-    _
 
   /**
     * beware that server reference is mutable
@@ -76,13 +86,13 @@ object InMemoryLdapServer {
       } else {
         log.warn("Server already running")
       }
-      LdapContext(server._1, server._2)
+      LdapContext(server.server, server.secContext)
     }
   }
 
   private def startInternal(
       config: Config = ConfigFactory.defaultReference
-  ): (InMemoryDirectoryServer, Option[SSLContext]) = {
+  ): ServerWithContext = {
     val (settings, sslContext) = defaultSettings(config)
     val ds: InMemoryDirectoryServer = new InMemoryDirectoryServer(
       settings
@@ -100,13 +110,13 @@ object InMemoryLdapServer {
       ds.getListenAddress,
       ds.getListenPort
     )
-    (ds, sslContext)
+    ServerWithContext(ds, sslContext)
   }
 
   def stop(): Unit = {
     this.synchronized {
       if (server != nil) {
-        server._1.shutDown(true)
+        server.server.shutDown(true)
         server = nil
       } else {
         log.warn("ldap server cannot be closed as it is not running")
@@ -120,8 +130,8 @@ object InMemoryLdapServer {
   def withRunningLdapConfig[T](
       config: Config = defaultConfig
   )(body: => LdapContext => T): T = {
-    val (server, context) = startInternal(config)
-    val ctx: LdapContext  = LdapContext(server, context)
+    val internal         = startInternal(config)
+    val ctx: LdapContext = LdapContext(internal.server, internal.secContext)
     try {
       body(ctx)
     } finally {

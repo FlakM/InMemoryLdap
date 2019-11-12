@@ -1,12 +1,10 @@
 package com.github.flakm
 
 import com.github.flakm.CommonUtils._
-import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.sdk.LDAPException
 import org.scalatest.{FlatSpec, Matchers}
 
 class StartStopTest extends FlatSpec with Matchers {
-
   behavior of "InMemoryLdapServer.start/stop"
 
   it should "enable to start/stop shared server" in {
@@ -32,7 +30,5 @@ class StartStopTest extends FlatSpec with Matchers {
 
     InMemoryLdapServer.stop()
     InMemoryLdapServer.stop() // we can call it multiple times
-
   }
-
 }

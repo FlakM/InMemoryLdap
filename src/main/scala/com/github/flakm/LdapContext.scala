@@ -2,9 +2,12 @@ package com.github.flakm
 
 import java.net.InetAddress
 
-import com.unboundid.ldap.listener.{InMemoryDirectoryServer, ReadOnlyInMemoryDirectoryServerConfig}
+import com.github.flakm.SSLProvider.SecurityContext
+import com.unboundid.ldap.listener.{
+  InMemoryDirectoryServer,
+  ReadOnlyInMemoryDirectoryServerConfig
+}
 import com.unboundid.ldap.sdk.LDAPConnection
-import javax.net.ssl.SSLContext
 
 trait LdapContext {
   def port: Int
@@ -12,12 +15,14 @@ trait LdapContext {
   def connectionFactory: () => LDAPConnection
   def shutDown(): Unit
   def config: ReadOnlyInMemoryDirectoryServerConfig
-  def clientSslContext: Option[SSLContext]
+  def securityContext: SecurityContext
 }
 
 object LdapContext {
-
-  def apply(s: InMemoryDirectoryServer, clientSSLContext: Option[SSLContext]): LdapContext = new LdapContext {
+  def apply(
+      s: InMemoryDirectoryServer,
+      clientSSLContext: SecurityContext
+  ): LdapContext = new LdapContext {
     override def port: Int = s.getListenPort
 
     override def host: InetAddress = s.getListenAddress
@@ -33,7 +38,6 @@ object LdapContext {
       case _                 => false
     }
 
-    override def clientSslContext: Option[SSLContext] = clientSSLContext
+    override def securityContext: SecurityContext = clientSSLContext
   }
-
 }

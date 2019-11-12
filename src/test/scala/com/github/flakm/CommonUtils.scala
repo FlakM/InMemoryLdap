@@ -1,11 +1,9 @@
 package com.github.flakm
 
-import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.sdk.SearchResultEntry
 import org.scalatest.Matchers
 
 object CommonUtils extends Matchers {
-
   private def checkUserExists(
       user: String
   )(implicit ds: LdapContext): Unit = {
@@ -19,5 +17,4 @@ object CommonUtils extends Matchers {
     checkUserExists("bob")
   def checkLilyExists(implicit ds: LdapContext): Unit =
     checkUserExists("lily")
-
 }
