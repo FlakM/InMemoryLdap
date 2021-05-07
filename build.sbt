@@ -1,4 +1,17 @@
-import sbtrelease.Version
+
+inThisBuild(List(
+  organization := "com.github.flakm",
+  homepage := Some(url("https://github.com/FlakM/InMemoryLdap")),
+  licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+  developers := List(
+    Developer(
+      "FlakM",
+      "Maciej Flak",
+      "maciej.jan.flak@gmail.com",
+      url("https://flakm.github.io/")
+    )
+  )
+))
 
 parallelExecution in ThisBuild := false
 
@@ -29,44 +42,7 @@ lazy val commonLibrarySettings = libraryDependencies ++= Seq(
 )
 
 
-
-lazy val publishSettings = Seq(
-  licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
-  publishArtifact in Test := false,
-  // https://github.com/sbt/sbt/issues/3570#issuecomment-432814188
-  updateOptions := updateOptions.value.withGigahorse(false),
-  developers := List(
-    Developer(
-      "FlakM",
-      "Maciej Flak",
-      "maciej.jan.flak@gmail.com",
-      url("http://twitter.com/flakm")
-    )
-  )
-)
-
-import ReleaseTransformations._
-
-lazy val releaseSettings = Seq(
-  releaseProcess := Seq[ReleaseStep](
-    checkSnapshotDependencies,
-    inquireVersions,
-    runClean,
-    runTest,
-    setReleaseVersion,
-    commitReleaseVersion,
-    tagRelease,
-    setNextVersion,
-    commitNextVersion,
-    pushChanges
-  ),
-  releaseVersionBump := Version.Bump.Minor,
-  releaseCrossBuild := true
-)
-
 lazy val root = (project in file("."))
   .settings(name := "inmemoryldap")
-  .settings(publishSettings: _*)
   .settings(commonSettings: _*)
   .settings(commonLibrarySettings)
-  .settings(releaseSettings: _*)

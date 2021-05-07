@@ -61,7 +61,8 @@ keytool -certreq -v \
   -keypass:env PW \
   -storepass:env PW \
   -keystore "$TMP_DIR"/server.jks \
-  -file "$TMP_DIR"/server.csr
+  -file "$TMP_DIR"/server.csr \
+  -validity 99999
 
 # Tell exampleCA to sign the example.com certificate. Note the extension is on the request, not the
 # original certificate.
@@ -76,6 +77,7 @@ keytool -gencert -v \
   -ext KeyUsage:critical="digitalSignature,keyEncipherment" \
   -ext EKU="serverAuth" \
   -ext SAN="DNS:127.0.0.1" \
+  -validity 99999 \
   -rfc
 
 # Tell server.jks it can trust exampleca as a signer.
@@ -125,7 +127,8 @@ keytool -certreq -v \
   -keypass:env PW \
   -storepass:env PW \
   -keystore "$TMP_DIR"/client.jks \
-  -file "$TMP_DIR"/client.csr
+  -file "$TMP_DIR"/client.csr \
+  -validity 99999
 
 
 # Make clientCA create a certificate chain saying that client is signed by clientCA.
@@ -137,6 +140,7 @@ keytool -gencert -v \
   -infile "$TMP_DIR"/client.csr \
   -outfile "$TMP_DIR"/client.crt \
   -ext EKU="clientAuth" \
+    -validity 99999 \
   -rfc
 
 echo "xxx"
