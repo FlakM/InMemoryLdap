@@ -11,6 +11,7 @@ import com.unboundid.ldap.listener.{
 }
 
 import java.util
+import scala.util.{Failure, Success, Try}
 
 object InMemoryLdapServer {
   private val nil = null
@@ -107,7 +108,17 @@ object InMemoryLdapServer {
       aListOfFileNames => {
         aListOfFileNames
           .map(
-            aSingleFileName => getClass().getResource(aSingleFileName).getPath
+            aSingleFileName => {
+              Try(getClass().getResource(aSingleFileName)) match {
+                case Success(anResource) => anResource.getPath
+                case Failure(exc) => {
+                  log.error(
+                    s"The File $aSingleFileName does not exist. skipping"
+                  )
+                  ""
+                }
+              }
+            }
           )
           .filter(x => x.nonEmpty)
       }
