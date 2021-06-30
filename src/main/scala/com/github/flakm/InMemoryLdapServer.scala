@@ -10,7 +10,7 @@ import com.unboundid.ldap.listener.{
   InMemoryListenerConfig
 }
 
-import java.util
+import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
 
 object InMemoryLdapServer {
@@ -99,11 +99,8 @@ object InMemoryLdapServer {
     val ds: InMemoryDirectoryServer = new InMemoryDirectoryServer(
       settings
     )
-    object Converter {
-      import scala.jdk.CollectionConverters._
-      val allFilesFromConfiguration =
-        config.getStringList("inmemoryldap.files").asScala.toList
-    }
+    val allFilesFromConfiguration =
+      config.getStringList("inmemoryldap.files").asScala.toList
     lazy val constructPathsFromFiles: List[String] => List[String] =
       aListOfFileNames => {
         aListOfFileNames
@@ -124,7 +121,7 @@ object InMemoryLdapServer {
       }
 
     val dataToImport: List[String] =
-      constructPathsFromFiles.apply(Converter.allFilesFromConfiguration)
+      constructPathsFromFiles.apply(allFilesFromConfiguration)
     dataToImport.foreach { path =>
       log.debug(s"Installing ldif file from ${path}")
       ds.importFromLDIF(false, path)
