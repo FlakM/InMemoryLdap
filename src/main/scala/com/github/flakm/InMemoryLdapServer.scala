@@ -108,12 +108,11 @@ object InMemoryLdapServer {
             aSingleFileName => {
               Try(getClass().getResource(aSingleFileName)) match {
                 case Success(anResource) => anResource.getPath
-                case Failure(exc) => {
-                  log.error(
-                    s"The File $aSingleFileName does not exist. skipping"
+                case Failure(exc) =>
+                  throw new Exception(
+                    s"The ldiff file defined in configuration $aSingleFileName does not exist. ",
+                    exc
                   )
-                  ""
-                }
               }
             }
           )
