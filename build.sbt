@@ -21,7 +21,7 @@ lazy val commonSettings = Seq(
   //  https://github.com/scala/bug/issues/11608
   //  todo after #295 being fixed we can bump jdk11 -> 13 and scala version to 2.13.1 (travis and here)
   scalaVersion := "2.13.0",
-  crossScalaVersions := Seq("2.12.9", "2.13.0"),
+  crossScalaVersions := Seq("2.12.14", "2.13.6"),
   homepage := Some(url("https://github.com/FlakM/InMemoryLdap")),
   parallelExecution in Test := false,
   logBuffered in Test := false,
@@ -29,12 +29,7 @@ lazy val commonSettings = Seq(
   javaOptions ++= Seq("-Xms512m", "-Xmx2048m"),
   scalacOptions ++= Seq(
     "-deprecation",
-    "-encoding", "UTF-8",
-    "-explaintypes",
-    "-Xfatal-warnings",
-    "-Werror",
-    "-Wdead-code"
-  ),
+    "-encoding", "UTF-8"),
   scalafmtOnCompile := true
 )
 
@@ -55,3 +50,9 @@ lazy val root = (project in file("."))
   .settings(name := "inmemoryldap")
   .settings(commonSettings: _*)
   .settings(commonLibrarySettings)
+
+ThisBuild / scalafixDependencies += "org.scala-lang.modules" %% "scala-collection-migrations" % "2.4.4"
+libraryDependencies +=  "org.scala-lang.modules" %% "scala-collection-compat" % "2.4.4"
+addCompilerPlugin(scalafixSemanticdb)
+scalacOptions ++= List("-Yrangepos", "-P:semanticdb:synthetics:on")
+
