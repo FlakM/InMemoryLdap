@@ -1,7 +1,6 @@
 package com.github.flakm
 
-import java.net.InetAddress
-
+import java.net.{InetAddress, URL}
 import com.github.flakm.SSLProvider.{NotSecure, Secured, SecurityContext}
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.Logger
@@ -10,6 +9,9 @@ import com.unboundid.ldap.listener.{
   InMemoryDirectoryServerConfig,
   InMemoryListenerConfig
 }
+
+import scala.jdk.CollectionConverters._
+import scala.util.{Failure, Success, Try}
 
 object InMemoryLdapServer {
   private val nil = null
@@ -97,10 +99,30 @@ object InMemoryLdapServer {
     val ds: InMemoryDirectoryServer = new InMemoryDirectoryServer(
       settings
     )
+    val allFilesFromConfiguration =
+      config.getStringList("inmemoryldap.files").asScala.toList
+    lazy val constructPathsFromFiles: List[String] => List[String] =
+      aListOfFileNames => {
+        aListOfFileNames
+          .map(
+            aSingleFileName => {
+              Try(getClass().getResource(aSingleFileName)) match {
+                case Success(anResource) => anResource.getPath
+                case Failure(exc) =>
+                  throw new Exception(
+                    s"The ldiff file defined in configuration $aSingleFileName does not exist. ",
+                    exc
+                  )
+              }
+            }
+          )
+          .filter(x => x.nonEmpty)
+      }
 
-    config.getStringList("inmemoryldap.files").forEach { p =>
-      val path = getClass.getResource(p).getPath
-      log.debug("Installing ldif file from {}", path)
+    val dataToImport: List[String] =
+      constructPathsFromFiles.apply(allFilesFromConfiguration)
+    dataToImport.foreach { path =>
+      log.debug(s"Installing ldif file from ${path}")
       ds.importFromLDIF(false, path)
     }
 

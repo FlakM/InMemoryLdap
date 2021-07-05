@@ -27,13 +27,22 @@ lazy val commonSettings = Seq(
   logBuffered in Test := false,
   fork in Test := true,
   javaOptions ++= Seq("-Xms512m", "-Xmx2048m"),
-  scalacOptions += "-deprecation",
+  scalacOptions ++= Seq(
+    "-deprecation",
+    "-encoding", "UTF-8",
+    "-explaintypes",
+    "-Xfatal-warnings",
+    "-Werror",
+    "-Wdead-code"
+  ),
   scalafmtOnCompile := true
 )
 
+val unboundidLdapsdkVersion = "6.0.0"
+val typesafeConfigVersion = "1.4.1"
 lazy val commonLibrarySettings = libraryDependencies ++= Seq(
-  "com.unboundid" % "unboundid-ldapsdk" % "4.0.12",
-  "com.typesafe" % "config" % "1.4.0",
+  "com.unboundid" % "unboundid-ldapsdk" % unboundidLdapsdkVersion,
+  "com.typesafe" % "config" % typesafeConfigVersion,
   "com.typesafe" %% "ssl-config-core" % "0.4.0",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   "org.scalactic" %% "scalactic" % "3.0.8" % "test",
